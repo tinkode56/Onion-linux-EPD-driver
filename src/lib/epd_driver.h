@@ -111,6 +111,6 @@ void SPITransfer(uint8_t const *tx, size_t len);
 void EPDSendCmdData(uint8_t *arr);
 void EPDInit(void);
 void EPDPostTx(void);
-void EPDSendPictureContent(uint8_t *arr);
+void EPDSendPictureContent(char filename[]);
 
 #endif

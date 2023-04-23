@@ -1,5 +1,6 @@
 #include "epd_driver.h"
 #include "image.h"
+#include <sys/stat.h>
 
 /**
  * @brief Sets DC pin level
@@ -228,8 +229,39 @@ void EPDPostTx(void)
 /**
  * @brief Send data containing image to be displayed
 */
-void EPDSendPictureContent(uint8_t *arr)
+void EPDSendPictureContent(char filename[])
 {
+    /* Prepare bin file */
+    struct stat info;
+    if (stat(filename, &info) != 0)
+    {
+        perror("Error handling file --> STAT\n");
+    }
+    printf("FILE SIZE: %lu\n", (unsigned long)info.st_size);
+    char *content = malloc(info.st_size);
+    if (content == NULL) {
+        perror("Error handling file --> CONTENT\n");
+    }
+
+    FILE *fp = fopen(filename, "rb");
+    if (fp == NULL) {
+        perror("Error handling file --> OPEN\n");
+    }
+
+    /* Try to read a single block of info.st_size bytes */
+    size_t blocks_read = fread(content, info.st_size, 1, fp);
+    if (blocks_read != 1) {
+        perror("Error handling file --> BLOCKS READ\n");
+    }
+    fclose(fp);
+
+    /*
+    * If nothing went wrong, content now contains the
+    * data read from the file.
+    */
+
+    printf("DATA LENGTH: %lu\n", (unsigned long)info.st_size);
+
     /* Send data */
     SetDC(LEVEL_HIGH);
     // for (int j = 0; j < WIDTH; j++)
@@ -239,10 +271,13 @@ void EPDSendPictureContent(uint8_t *arr)
     //         SPITransfer(&arr[i + (j * (HEIGHT/2))], 1);
     //     }
     // }
-
+    // fread(buffer,WIDTH*HEIGHT/2, WIDTH*HEIGHT/2, ptr);
     for (int j = 0; j < WIDTH; j++)
     {
-        SPITransfer(&arr[j * (HEIGHT/2)], (HEIGHT/2));
+        for (int i = 0; i < (HEIGHT/2); i++)
+        {
+            SPITransfer(&content[i + (j * (HEIGHT/2))], 1);
+        }
     }
     
 }

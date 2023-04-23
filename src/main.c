@@ -7,10 +7,13 @@ int main(void)
 {
 	/* Colors: 
 		0x00 - black (2 pixels)
-		0x11 - white (2 pixels)
+		0x33 - white (2 pixels)
 		0x44 - red (2 pixels)
 	 */
-	
+
+	// unsigned char buffer[HEIGHT/2];
+	// FILE *ptr;
+
 	// uint8_t *tx;
 	// int size = WIDTH*(HEIGHT/2);
 
@@ -38,7 +41,11 @@ int main(void)
 	// EPDSendCmdData((uint8_t *)power_setting_cmd);
 	EPDInit();
 	EPDSendCmdData((uint8_t *)start_tx_setting_cmd);
-	EPDSendPictureContent((uint8_t *)epd_75_image);
+
+	// ptr = fopen("image.bin", "rb");
+	// fread(buffer,WIDTH*HEIGHT/2, 1, ptr);
+	EPDSendPictureContent("image.bin");
+
 	EPDPostTx();
 	// free(tx);
     return 0;
