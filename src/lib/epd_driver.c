@@ -1,4 +1,5 @@
 #include "epd_driver.h"
+#include "image.h"
 
 /**
  * @brief Sets DC pin level
@@ -154,7 +155,7 @@ void SPIInit(void)
 
 /**
  * @brief Sends CMD+DAT to EPD and toggles the pins accordingly
- * @param arr Array with info to be sent to EPD
+ * @param arr Array of data to be sent to EPD
 */
 void EPDSendCmdData(uint8_t *arr)
 {
@@ -170,4 +171,78 @@ void EPDSendCmdData(uint8_t *arr)
         SetDC(LEVEL_HIGH);
         SPITransfer(&arr[2], array_length-2);
     }
+}
+
+/**
+ * @brief Initializes the EPD driver
+*/
+void EPDInit(void)
+{
+    /* Perform hard reset */
+    SetRESET(LEVEL_HIGH);
+    usleep(10000);
+    SetRESET(LEVEL_LOW);
+    usleep(1000);
+    SetRESET(LEVEL_HIGH);
+    /* Wait for BUSY signal to clear */
+    GetBUSY();
+
+    /* Booster soft start */
+    EPDSendCmdData((uint8_t *)boost_setting_cmd);
+    /* Power setting */
+    EPDSendCmdData((uint8_t *)power_setting_cmd);
+    /* Power on */
+    EPDSendCmdData((uint8_t *)pwron_setting_cmd);
+    /* Wait for BUSY signal to clear */
+    GetBUSY();
+    /* Panel setting */
+    EPDSendCmdData((uint8_t *)panel_setting_cmd);
+    /* PLL setting */
+    EPDSendCmdData((uint8_t *)pll_setting_cmd);
+    /* Resolution setting */
+    EPDSendCmdData((uint8_t *)tres_setting_cmd);
+    /* VCM_DC setting*/
+    EPDSendCmdData((uint8_t *)vdcs_setting_cmd);
+    /* Vcom and data interval setting */
+    EPDSendCmdData((uint8_t *)vcom_dat_setting_cmd);
+    /* Define flash */
+    EPDSendCmdData((uint8_t *)fls_mode_setting_cmd);
+}
+
+/**
+ * @brief Post data transmission commands and power off + deep sleep
+*/
+void EPDPostTx(void)
+{
+    /* Display refresh */
+    EPDSendCmdData((uint8_t *)refresh_setting_cmd);
+    /* Wait for BUSY signal to clear */
+    GetBUSY();
+
+    /* Power off */
+    EPDSendCmdData((uint8_t *)pwroff_setting_cmd);
+    /* Deep sleep */
+    EPDSendCmdData((uint8_t *)deepsleep_setting_cmd);
+}
+
+/**
+ * @brief Send data containing image to be displayed
+*/
+void EPDSendPictureContent(uint8_t *arr)
+{
+    /* Send data */
+    SetDC(LEVEL_HIGH);
+    // for (int j = 0; j < WIDTH; j++)
+    // {
+    //     for (int i = 0; i < (HEIGHT/2); i++)
+    //     {
+    //         SPITransfer(&arr[i + (j * (HEIGHT/2))], 1);
+    //     }
+    // }
+
+    for (int j = 0; j < WIDTH; j++)
+    {
+        SPITransfer(&arr[j * (HEIGHT/2)], (HEIGHT/2));
+    }
+    
 }
