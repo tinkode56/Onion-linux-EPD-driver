@@ -1,6 +1,7 @@
 #include "epd_driver.h"
 #include "image.h"
 #include <sys/stat.h>
+#include <bmp_util.h>
 
 /**
  * @brief Sets DC pin level
@@ -227,7 +228,7 @@ void EPDPostTx(void)
 }
 
 /**
- * @brief Send data containing image to be displayed
+ * @brief Send data containing image to be displayed, read from BIN file
 */
 void EPDSendPictureContent(char filename[])
 {
@@ -264,20 +265,46 @@ void EPDSendPictureContent(char filename[])
 
     /* Send data */
     SetDC(LEVEL_HIGH);
-    // for (int j = 0; j < WIDTH; j++)
+    // for (int j = 0; j < EPD_WIDTH; j++)
     // {
-    //     for (int i = 0; i < (HEIGHT/2); i++)
+    //     for (int i = 0; i < (EPD_HEIGHT/2); i++)
     //     {
-    //         SPITransfer(&arr[i + (j * (HEIGHT/2))], 1);
+    //         SPITransfer(&arr[i + (j * (EPD_HEIGHT/2))], 1);
     //     }
     // }
-    // fread(buffer,WIDTH*HEIGHT/2, WIDTH*HEIGHT/2, ptr);
-    for (int j = 0; j < WIDTH; j++)
+    // fread(buffer,EPD_WIDTH*EPD_HEIGHT/2, EPD_WIDTH*EPD_HEIGHT/2, ptr);
+    for (int j = 0; j < EPD_WIDTH; j++)
     {
-        for (int i = 0; i < (HEIGHT/2); i++)
+        for (int i = 0; i < (EPD_HEIGHT/2); i++)
         {
-            SPITransfer(&content[i + (j * (HEIGHT/2))], 1);
+            SPITransfer(&content[i + (j * (EPD_HEIGHT/2))], 1);
         }
     }
     
+}
+
+/**
+ * @brief Send data containing image to be displayed, read from BMP file
+*/
+void EPDSendBMPData(char filename[])
+{
+    uint8_t* data_buffer = (uint8_t*)malloc((EPD_WIDTH * EPD_HEIGHT) * sizeof(uint8_t));
+    BMPParse(filename, data_buffer);
+
+    /* Send data */
+    SetDC(LEVEL_HIGH);
+    for (int j = EPD_WIDTH * (EPD_HEIGHT/2); j > 0; j-=(EPD_HEIGHT/2))
+    {
+        // for (int i = 0; i < (EPD_HEIGHT/2); i++)
+        // {
+            SPITransfer(&data_buffer[j], EPD_HEIGHT/2);
+        // }
+    }
+    // for (int j = 0; j < EPD_WIDTH; j++)
+    // {
+    //     for (int i = 0; i < (EPD_HEIGHT/2); i++)
+    //     {
+    //         SPITransfer(&data_buffer[i + (j * (EPD_HEIGHT/2))], 1);
+    //     }
+    // }
 }

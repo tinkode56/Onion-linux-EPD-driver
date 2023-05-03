@@ -1,9 +1,10 @@
-#include <lib/epd_driver.h>
+#include <epd_driver.h>
+#include <bmp_util.h>
 #include <main.h>
 #include "image.h"
 
 
-int main(void)
+int main(int argc, char* argv[])
 {
 	/* Colors: 
 		0x00 - black (2 pixels)
@@ -11,11 +12,11 @@ int main(void)
 		0x44 - red (2 pixels)
 	 */
 
-	// unsigned char buffer[HEIGHT/2];
+	// unsigned char buffer[EPD_HEIGHT/2];
 	// FILE *ptr;
 
 	// uint8_t *tx;
-	// int size = WIDTH*(HEIGHT/2);
+	// int size = EPD_WIDTH*(EPD_HEIGHT/2);
 
 	// tx = malloc(size);
 
@@ -43,8 +44,10 @@ int main(void)
 	EPDSendCmdData((uint8_t *)start_tx_setting_cmd);
 
 	// ptr = fopen("image.bin", "rb");
-	// fread(buffer,WIDTH*HEIGHT/2, 1, ptr);
-	EPDSendPictureContent("image.bin");
+	// fread(buffer,EPD_WIDTH*EPD_HEIGHT/2, 1, ptr);
+	// EPDSendPictureContent("image.bin");
+	// EPDSendBMPData("miaumiau2.bmp");
+	EPDSendBMPData(argv[1]);
 
 	EPDPostTx();
 	// free(tx);

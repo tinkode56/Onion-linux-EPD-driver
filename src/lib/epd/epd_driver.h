@@ -43,8 +43,8 @@
 
 #define EPD_BUSY_READY 1
 
-#define WIDTH 384
-#define HEIGHT 640
+#define EPD_WIDTH 384
+#define EPD_HEIGHT 640
 
 
 /**
@@ -112,5 +112,6 @@ void EPDSendCmdData(uint8_t *arr);
 void EPDInit(void);
 void EPDPostTx(void);
 void EPDSendPictureContent(char filename[]);
+void EPDSendBMPData(char filename[]);
 
 #endif
