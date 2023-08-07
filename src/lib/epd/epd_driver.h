@@ -75,20 +75,21 @@ static uint16_t spi_delay;
 
 static uint8_t power_setting_cmd[] = { 0x07, 0x01, 0x37, 0x00, 0x23, 0x23, 0x00 };
 static uint8_t pwron_setting_cmd[] = { 0x02, 0x04 };
-static uint8_t panel_setting_cmd[] = { 0x04, 0x00, 0x0f, 0x00 };
+static uint8_t panel_setting_cmd[] = { 0x04, 0x00, 0xcf, 0x08 };
 static uint8_t boost_setting_cmd[] = { 0x05, 0x06, 0xc7, 0xcc, 0x28 };
 static uint8_t pll_setting_cmd[] = { 0x03, 0x30, 0x3c };
 static uint8_t temp_setting_cmd[] = { 0x03, 0x41, 0x00 };
 static uint8_t vcom_dat_setting_cmd[] = { 0x03, 0x50, 0x77 };
 static uint8_t tcon_setting_cmd[] = { 0x03, 0x60, 0x22 };
 static uint8_t tres_setting_cmd[] = { 0x06, 0x61, 0x02, 0x80, 0x01, 0x80 };
-static uint8_t vdcs_setting_cmd[] = { 0x03, 0x82, 0x15 };
+static uint8_t vdcs_setting_cmd[] = { 0x03, 0x82, 0x1e };
 static uint8_t fls_mode_setting_cmd[] = { 0x03, 0xe5, 0x03 };
 static uint8_t start_tx_setting_cmd[] = { 0x02, 0x10 };
 static uint8_t stop_tx_setting_cmd[] = { 0x02, 0x11 };
 static uint8_t refresh_setting_cmd[] = { 0x02, 0x12 };
 static uint8_t pwroff_setting_cmd[] = { 0x02, 0x02 };
 static uint8_t deepsleep_setting_cmd[] = { 0x03, 0x07, 0xa5 };
+static uint8_t ipc_setting_cmd[] = { 0x03, 0x13, 0x10};
 // static uint8_t _setting_cmd[] = { 0x00, };
 
 /**

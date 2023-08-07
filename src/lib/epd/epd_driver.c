@@ -150,7 +150,7 @@ void SPIInit(void)
 
     printf("SPI mode: 0x%x\n", spi_mode);
     printf("SPI bits per word: %d\n", spi_bits);
-    printf("SPI max speed: %dHz (%dkHz)\n", spi_speed, spi_speed/1000);
+    printf("SPI max speed: %dHz (%dMHz)\n", spi_speed, spi_speed/1000000);
 
     close(fd);
 }
@@ -189,24 +189,28 @@ void EPDInit(void)
     /* Wait for BUSY signal to clear */
     GetBUSY();
 
-    /* Booster soft start */
-    EPDSendCmdData((uint8_t *)boost_setting_cmd);
     /* Power setting */
     EPDSendCmdData((uint8_t *)power_setting_cmd);
+    /* Panel setting */
+    EPDSendCmdData((uint8_t *)panel_setting_cmd);
+    /* Booster soft start */
+    EPDSendCmdData((uint8_t *)boost_setting_cmd);
     /* Power on */
     EPDSendCmdData((uint8_t *)pwron_setting_cmd);
     /* Wait for BUSY signal to clear */
     GetBUSY();
-    /* Panel setting */
-    EPDSendCmdData((uint8_t *)panel_setting_cmd);
     /* PLL setting */
     EPDSendCmdData((uint8_t *)pll_setting_cmd);
+    /* Temp calibration */
+    EPDSendCmdData((uint8_t *)temp_setting_cmd);
+    /* Vcom and data interval setting */
+    EPDSendCmdData((uint8_t *)vcom_dat_setting_cmd);
+    /* TCON setting */
+    EPDSendCmdData((uint8_t *)tcon_setting_cmd);
     /* Resolution setting */
     EPDSendCmdData((uint8_t *)tres_setting_cmd);
     /* VCM_DC setting*/
     EPDSendCmdData((uint8_t *)vdcs_setting_cmd);
-    /* Vcom and data interval setting */
-    EPDSendCmdData((uint8_t *)vcom_dat_setting_cmd);
     /* Define flash */
     EPDSendCmdData((uint8_t *)fls_mode_setting_cmd);
 }
